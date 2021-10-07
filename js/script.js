@@ -1,56 +1,59 @@
 (() => {
+    'use strict';
 
-
-
-
-//
-//     'use strict';
-//
-//     //PLAYER *CURRENT* STATS FOR SEASON
+    // for testing
     let desiredPositions = {inclusions: ["WR"], team: "LAR"};
-    const playerCurrentStats = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonStats/2021REG?key=${SPORTS_API_TOKEN}`)
-        playerCurrentStats.then(result => {
-            result.json().then(data => {
-                console.log(data);
-                let filteredData = getHighestByDataPoint(data, desiredPositions, true);
-                console.log(filteredData);
-                createChart(renderDoughnut(filteredData));
+    let doc = $("body");
+    let testing_box = $("#card-testing-box");
 
 
-                teamData().then(result => {
-                    let team = filteredData[0].Team;
-                    let teamData = result.filter(teamObj => teamObj.Key === team)[0];
-                    testing_box.html(createCard(filteredData[0], teamData));
-                });
-
-
-
-
-            })
-        });
-
-
-    function createChart(data) {
-        let chart1 = new Chart(
-            document.getElementById('myChart'),
-            data
-        );
+    //PLAYER *CURRENT* STATS FOR SEASON
+    const playerCurrentStats = () => {
+        return fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonStats/2021REG?key=${SPORTS_API_TOKEN}`)
+            .then(result => result.json().then(data => {
+                    return data;
+                })
+            );
     }
 
     // returns team data with colors and images
     // use this to render nice UI
     // take a specific player, get their team, match it to the 'key' for this return
     // pull the colors and urls off of it...
-    async function teamData(){
+    function getTeams() {
         return fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Teams?key=${TESTING_KEY}`)
             .then(res => res.json().then(data => {
                 return data;
             }));
     }
 
-//
-//
-//
+    const getFilterTeamData = async () => {
+        const allPlayers = await playerCurrentStats();
+
+        console.log(allPlayers);
+        let filteredData = getHighestByDataPoint(allPlayers, desiredPositions, true);
+        console.log(filteredData);
+
+        const teams = await getTeams();
+
+        let team = filteredData[0].Team;
+        let teamData = teams.filter(teamObj => teamObj.Key === team)[0];
+
+        return {filteredData, teamData};
+    }
+
+    getFilterTeamData().then( (data) => {
+        // pass in the team data to then use the color list in the chart
+        createChart(renderDoughnut(data.filteredData, data.teamData, "ReceivingTargets"));
+        testing_box.html(createCard(data.filteredData[0], data.teamData));
+
+    });
+
+
+
+
+
+
 //     //PLAYER SEASON *PROJECTED* STATS
 //     const playerSeasonProj = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonProjectionStats/2021REG?key=${SPORTS_API_TOKEN}`)
 //            playerSeasonProj.then(result => {
@@ -73,8 +76,7 @@
 
 
 
-    let doc = $("body");
-    let testing_box = $("#card-testing-box");
+
 
     doc.on("mouseenter", ".player-card", function (){
         const currCard = $(this).children()[0];
@@ -87,6 +89,13 @@
         const classes = currCard.classList;
         classes.remove("flip");
     });
+
+    function createChart(data) {
+        new Chart(
+            document.getElementById('myChart'),
+            data
+        );
+    }
 
     function createCard(cardObj, teamData) {
         return `<div style="background-color: #${teamData.PrimaryColor}; border: 4px solid #${teamData.TertiaryColor}" class="player-card flip-card" id="card">
