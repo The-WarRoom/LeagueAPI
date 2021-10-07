@@ -33,14 +33,14 @@ body{
     margin: auto;
 
     /*change to non hard coded values later*/
-    width: 360px;
-    height: 415px;
+    width: 490px;
+    height: 615px;
     /**/
 
     perspective: 1000px;
     box-shadow: -6px 4px 1px 0 rgb(123 123 123);
-    background-color: #d5d4d4;
-    border: 4px solid;
+    /*background-color: #d5d4d4;*/
+    /*border: 4px solid;*/
     border-radius: 5px;
 }
 .flip-card-inner {

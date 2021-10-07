@@ -12,10 +12,20 @@
         playerCurrentStats.then(result => {
             result.json().then(data => {
                 console.log(data);
-                testing_box.html(createCard(data[0]));
                 let filteredData = getHighestByDataPoint(data, desiredPositions, true);
                 console.log(filteredData);
                 createChart(renderDoughnut(filteredData));
+
+
+                teamData().then(result => {
+                    let team = filteredData[0].Team;
+                    let teamData = result.filter(teamObj => teamObj.Key === team)[0];
+                    testing_box.html(createCard(filteredData[0], teamData));
+                });
+
+
+
+
             })
         });
 
@@ -27,7 +37,16 @@
         );
     }
 
-
+    // returns team data with colors and images
+    // use this to render nice UI
+    // take a specific player, get their team, match it to the 'key' for this return
+    // pull the colors and urls off of it...
+    async function teamData(){
+        return fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Teams?key=${TESTING_KEY}`)
+            .then(res => res.json().then(data => {
+                return data;
+            }));
+    }
 
 //
 //
@@ -40,13 +59,13 @@
 //                })
 //            });
 //
-//     //DEFENSIVE *PROJECTED* STATS
-//     const defSeasonProj = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/FantasyDefenseProjectionsBySeason/2021REG?key=${SPORTS_API_TOKEN}`)
-//             defSeasonProj.then(result => {
-//                 result.json().then(data => {
-//                     console.log(data);
-//                 })
-//             });
+    //DEFENSIVE *PROJECTED* STATS
+    // const defSeasonProj = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/FantasyDefenseProjectionsBySeason/2021REG?key=${SPORTS_API_TOKEN}`)
+    //         defSeasonProj.then(result => {
+    //             result.json().then(data => {
+    //                 console.log(data);
+    //             })
+    //         });
 //
 //
 //
@@ -69,26 +88,30 @@
         classes.remove("flip");
     });
 
-    function createCard(cardObj) {
-        return `<div class="player-card flip-card" id="card">
+    function createCard(cardObj, teamData) {
+        return `<div style="background-color: #${teamData.PrimaryColor}; border: 4px solid #${teamData.TertiaryColor}" class="player-card flip-card" id="card">
                     <div class="flip-card-inner">
                         <div class="flip-card-front">
                             <section id="top-image-sport" class="front-face">
-                                <h2>${cardObj.Team}</h2>
-                                <h3 id="side-sport-text">${cardObj.Season}</h3>
+                                <h2 style="color: #${teamData.SecondaryColor}">${teamData.YahooName}</h2>
+                                <h3 style="color: #${teamData.SecondaryColor}" id="side-sport-text">${cardObj.Season}</h3>
+                                <img src="${teamData.WikipediaLogoUrl}" alt="Logo"/>
                             </section>
                             <div id="bottom-name" class="front-face">
-                                <h3 id="player-name">${cardObj.Name}</h3>
+                                <h3 style="color: #${teamData.SecondaryColor}" id="player-name">${cardObj.Name}</h3>
+                                <div style="background-color: #${teamData.TertiaryColor}; text-align: center" id="water-mark-container">
+                                    <img src="${teamData.WikipediaWordMarkUrl}" alt="Team water mark"/>
+                                </div>
                             </div>
                         </div>
                         <div class="flip-card-back">
-                            ${cardBack(cardObj)}
+                            ${cardBack(cardObj, teamData)}
                         </div>
                     </div>
                 </div>`;
     }
 
-    function cardBack(cardObj) {
+    function cardBack(cardObj, teamData) {
         return `<section id="top-back-data">
                     <h3>${cardObj.Name}</h3>
                     <p>${cardObj.Position} for team ${cardObj.Team}</p>
