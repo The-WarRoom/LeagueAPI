@@ -1,6 +1,7 @@
-// this will take in the obj from the api call and return the higest
-// player object based off the passed in data property
-function getHighestByDataPoint(playerArr, dataPoint, includedPositions, filterByTeam = false) {
+// this will take in the data from the api and filter based off the
+// passed in inclusions
+
+function getHighestByDataPoint(playerArr, includedPositions, filterByTeam = false) {
     let outputPlayers = [];
     const {team, inclusions} = includedPositions;
     for(let i = 0; i < playerArr.length; i++) {
