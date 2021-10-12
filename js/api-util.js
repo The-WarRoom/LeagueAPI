@@ -3,7 +3,7 @@
 
 function getHighestByDataPoint(playerArr, includedPositions, filterByTeam = false) {
     let outputPlayers = [];
-    const {team, inclusions} = includedPositions; // could use some re-working later
+    const {team, inclusions} = includedPositions; // could use some re-working later maybe a util function to parse
     for(let i = 0; i < playerArr.length; i++) {
         let currPlayer = playerArr[i];
         let position = currPlayer["FantasyPosition"];

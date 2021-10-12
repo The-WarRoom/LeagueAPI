@@ -29,15 +29,18 @@
 
     const getFilterTeamData = async () => {
         const allPlayers = await playerCurrentStats();
+        const teams = await getTeams();
 
         console.log(allPlayers);
         let filteredData = getHighestByDataPoint(allPlayers, desiredPositions, true);
         console.log(filteredData);
 
-        const teams = await getTeams();
-
         let team = filteredData[0].Team;
-        let teamData = teams.filter(teamObj => teamObj.Key === team)[0];
+
+        // going to change this as it could throw an error
+        // let teamData = teams.filter(teamObj => teamObj.Key === team)[0];
+
+        let teamData = _.find(teams, ['Key', team]);
 
         return {filteredData, teamData};
     }
@@ -99,17 +102,20 @@
 
     function createCard(cardObj, teamData) {
         return `<div style="background-color: #${teamData.PrimaryColor}; border: 4px solid #${teamData.TertiaryColor}" class="player-card flip-card" id="card">
-                    <div class="flip-card-inner">
+                    <div class="flip-card-inner" datafld="flip">
                         <div class="flip-card-front">
                             <section id="top-image-sport" class="front-face">
-                                <h2 style="color: #${teamData.SecondaryColor}">${teamData.YahooName}</h2>
+                                <h2 style="color: #${teamData.SecondaryColor}" id="player-name">${cardObj.Name}</h2>
                                 <h3 style="color: #${teamData.SecondaryColor}" id="side-sport-text">${cardObj.Season}</h3>
                                 <img src="${teamData.WikipediaLogoUrl}" alt="Logo"/>
                             </section>
                             <div id="bottom-name" class="front-face">
-                                <h3 style="color: #${teamData.SecondaryColor}" id="player-name">${cardObj.Name}</h3>
-                                <div style="background-color: #${teamData.TertiaryColor}; text-align: center" id="water-mark-container">
-                                    <img src="${teamData.WikipediaWordMarkUrl}" alt="Team water mark"/>
+                                <div style="text-align: center; display: flex;" id="water-mark-container">
+                                    <h4 style="color: #${teamData.SecondaryColor}">${teamData.YahooName}</h4>
+                                    <div style="background-color: #${teamData.TertiaryColor};">
+                                        <img src="${teamData.WikipediaWordMarkUrl}" alt="Team water mark"/>
+                                    </div>
+                                    <h4 style="color: #${teamData.SecondaryColor}">${cardObj.Position}</h4>
                                 </div>
                             </div>
                         </div>
