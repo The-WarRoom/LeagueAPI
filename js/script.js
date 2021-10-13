@@ -1,5 +1,17 @@
 (() => {
     'use strict';
+    ///=======================================================================================================  SUPERSLIDES section
+    $(document).ready( () => {
+
+        $('#slides').superslides()
+
+    });
+
+
+
+
+
+
 
     // for testing
     let desiredPositions = {inclusions: ["WR"], team: "LAR"};
