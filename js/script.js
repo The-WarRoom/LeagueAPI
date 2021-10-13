@@ -1,56 +1,62 @@
 (() => {
+    'use strict';
 
-
-
-
-//
-//     'use strict';
-//
-//     //PLAYER *CURRENT* STATS FOR SEASON
+    // for testing
     let desiredPositions = {inclusions: ["WR"], team: "LAR"};
-    const playerCurrentStats = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonStats/2021REG?key=${SPORTS_API_TOKEN}`)
-        playerCurrentStats.then(result => {
-            result.json().then(data => {
-                console.log(data);
-                let filteredData = getHighestByDataPoint(data, desiredPositions, true);
-                console.log(filteredData);
-                createChart(renderDoughnut(filteredData));
+    let doc = $("body");
+    let testing_box = $("#card-testing-box");
 
 
-                teamData().then(result => {
-                    let team = filteredData[0].Team;
-                    let teamData = result.filter(teamObj => teamObj.Key === team)[0];
-                    testing_box.html(createCard(filteredData[0], teamData));
-                });
-
-
-
-
-            })
-        });
-
-
-    function createChart(data) {
-        let chart1 = new Chart(
-            document.getElementById('myChart'),
-            data
-        );
+    //PLAYER *CURRENT* STATS FOR SEASON
+    const playerCurrentStats = () => {
+        return fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonStats/2021REG?key=${SPORTS_API_TOKEN}`)
+            .then(result => result.json().then(data => {
+                    return data;
+                })
+            );
     }
 
     // returns team data with colors and images
     // use this to render nice UI
     // take a specific player, get their team, match it to the 'key' for this return
     // pull the colors and urls off of it...
-    async function teamData(){
+    function getTeams() {
         return fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Teams?key=${TESTING_KEY}`)
             .then(res => res.json().then(data => {
                 return data;
             }));
     }
 
-//
-//
-//
+    const getFilterTeamData = async () => {
+        const allPlayers = await playerCurrentStats();
+        const teams = await getTeams();
+
+        console.log(allPlayers);
+        let filteredData = getHighestByDataPoint(allPlayers, desiredPositions, true);
+        console.log(filteredData);
+
+        let team = filteredData[0].Team;
+
+        // going to change this as it could throw an error
+        // let teamData = teams.filter(teamObj => teamObj.Key === team)[0];
+
+        let teamData = _.find(teams, ['Key', team]);
+
+        return {filteredData, teamData};
+    }
+
+    getFilterTeamData().then( (data) => {
+        // pass in the team data to then use the color list in the chart
+        createChart(renderDoughnut(data.filteredData, data.teamData, "ReceivingTargets"));
+        testing_box.html(createCard(data.filteredData[0], data.teamData));
+
+    });
+
+
+
+
+
+
 //     //PLAYER SEASON *PROJECTED* STATS
 //     const playerSeasonProj = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonProjectionStats/2021REG?key=${SPORTS_API_TOKEN}`)
 //            playerSeasonProj.then(result => {
@@ -73,8 +79,7 @@
 
 
 
-    let doc = $("body");
-    let testing_box = $("#card-testing-box");
+
 
     doc.on("mouseenter", ".player-card", function (){
         const currCard = $(this).children()[0];
@@ -88,19 +93,29 @@
         classes.remove("flip");
     });
 
+    function createChart(data) {
+        new Chart(
+            document.getElementById('myChart'),
+            data
+        );
+    }
+
     function createCard(cardObj, teamData) {
         return `<div style="background-color: #${teamData.PrimaryColor}; border: 4px solid #${teamData.TertiaryColor}" class="player-card flip-card" id="card">
-                    <div class="flip-card-inner">
+                    <div class="flip-card-inner" datafld="flip">
                         <div class="flip-card-front">
                             <section id="top-image-sport" class="front-face">
-                                <h2 style="color: #${teamData.SecondaryColor}">${teamData.YahooName}</h2>
+                                <h2 style="color: #${teamData.SecondaryColor}" id="player-name">${cardObj.Name}</h2>
                                 <h3 style="color: #${teamData.SecondaryColor}" id="side-sport-text">${cardObj.Season}</h3>
                                 <img src="${teamData.WikipediaLogoUrl}" alt="Logo"/>
                             </section>
                             <div id="bottom-name" class="front-face">
-                                <h3 style="color: #${teamData.SecondaryColor}" id="player-name">${cardObj.Name}</h3>
-                                <div style="background-color: #${teamData.TertiaryColor}; text-align: center" id="water-mark-container">
-                                    <img src="${teamData.WikipediaWordMarkUrl}" alt="Team water mark"/>
+                                <div style="text-align: center; display: flex;" id="water-mark-container">
+                                    <h4 style="color: #${teamData.SecondaryColor}">${teamData.YahooName}</h4>
+                                    <div style="background-color: #${teamData.TertiaryColor};">
+                                        <img src="${teamData.WikipediaWordMarkUrl}" alt="Team water mark"/>
+                                    </div>
+                                    <h4 style="color: #${teamData.SecondaryColor}">${cardObj.Position}</h4>
                                 </div>
                             </div>
                         </div>

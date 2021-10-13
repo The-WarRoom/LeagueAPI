@@ -3,14 +3,14 @@
 
 function getHighestByDataPoint(playerArr, includedPositions, filterByTeam = false) {
     let outputPlayers = [];
-    const {team, inclusions} = includedPositions;
+    const {team, inclusions} = includedPositions; // could use some re-working later maybe a util function to parse
     for(let i = 0; i < playerArr.length; i++) {
         let currPlayer = playerArr[i];
-        if(filterByTeam) {
-            let currentPlayerTeam = currPlayer.Team;
-            if(currentPlayerTeam !== team) continue;
-        }
         let position = currPlayer["FantasyPosition"];
+
+        if(filterByTeam) {
+            if(currPlayer.Team !== team) continue;
+        }
         if(inclusions.includes(position)) {
             outputPlayers.push(currPlayer);
         }
@@ -23,9 +23,6 @@ function getHighestByDataPoint(playerArr, includedPositions, filterByTeam = fals
 // WR ex
 //  sum up all the yards for the team and determine the share of a given WR
 
-
-
-
 /* WR =>
      Air yards
      target share
@@ -36,31 +33,28 @@ function getHighestByDataPoint(playerArr, includedPositions, filterByTeam = fals
 // Over x amount of weeks so far
 
 
-// FantasyPoints the highest so far
-
-
-
-function renderDoughnut(playerData) {
+function renderDoughnut(playerData, teamDataColors, chartStat) {
+    let colors = buildTeamColors(teamDataColors);
     let playerColors = [];
     let playerNames = [];
     let playerReceivingTargets = [];
 
     for(let i = 0; i < playerData.length; i++) {
-        playerColors.push(ranColor());
-        playerReceivingTargets.push(playerData[i]["ReceivingTargets"]);
+        // does not work well with a chart of size that is 1+ the len of the colors array, ends up putting 2 same colors together..
+        // maybe do something with the stat for those that are at 0 to help divide the chart up
+        // if so, keep the ratio of target share if say a point was added to the 0's to get them to render on the chart
+        playerColors.push(colors[i % colors.length]);
+
+        playerReceivingTargets.push(playerData[i][chartStat]);
         playerNames.push(playerData[i].Name);
     }
 
     const data = {
-        labels: [
-            ...playerNames
-        ],
+        labels: [...playerNames],
         datasets: [{
-            label: 'Target Share WR',
+            label: `Target Share ${playerData[0].FantasyPosition}`,
             data: [...playerReceivingTargets],
-            backgroundColor: [
-                ...playerColors
-            ],
+            backgroundColor: [...playerColors],
             hoverOffset: 4
         }]
     };
@@ -69,15 +63,4 @@ function renderDoughnut(playerData) {
         type: 'doughnut',
         data: data,
     };
-}
-
-function ranColor() {
-    let out = "rgb(";
-    for(let i = 0; i < 3; i++) {
-        let ran = ~~(Math.random() * 256);
-        out+=ran+",";
-    }
-    out = out.substring(0, out.length - 1);
-    out += ")";
-    return out;
 }
