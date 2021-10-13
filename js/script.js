@@ -1,13 +1,22 @@
 (() => {
     'use strict';
-    ///=======================================================================================================  SUPERSLIDES section
+    //====================================================================  SUPERSLIDES section
     $(document).ready( () => {
 
         $('#slides').superslides({
             animation: 'fade',
             play: 5000,
             pagination: false
-        })
+        });
+
+    //================================================================== TYPED.js effect
+        let typed = new Typed(".typed", {
+            strings: ["Select your players.", "Set your lineup.", "Win your league."],
+            typeSpeed: 70,
+            loop: true,
+            startDelay: 1000,
+            showCursor: false
+        });
 
     });
 
@@ -23,7 +32,7 @@
     let testing_box = $("#card-testing-box");
 
 
-    //PLAYER *CURRENT* STATS FOR SEASON
+    //==================================================================  PLAYER *CURRENT* STATS FOR SEASON
     const playerCurrentStats = () => {
         return fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonStats/2021REG?key=${SPORTS_API_TOKEN}`)
             .then(result => result.json().then(data => {
@@ -73,7 +82,7 @@
 
 
 
-//     //PLAYER SEASON *PROJECTED* STATS
+//     //==================================================================  PLAYER SEASON *PROJECTED* STATS
 //     const playerSeasonProj = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/PlayerSeasonProjectionStats/2021REG?key=${SPORTS_API_TOKEN}`)
 //            playerSeasonProj.then(result => {
 //                result.json().then(data => {
@@ -81,7 +90,7 @@
 //                })
 //            });
 //
-    //DEFENSIVE *PROJECTED* STATS
+    //=====================================================================  DEFENSIVE *PROJECTED* STATS
     // const defSeasonProj = fetch(`https://api.sportsdata.io/api/nfl/fantasy/json/FantasyDefenseProjectionsBySeason/2021REG?key=${SPORTS_API_TOKEN}`)
     //         defSeasonProj.then(result => {
     //             result.json().then(data => {
