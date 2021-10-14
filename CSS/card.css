@@ -6,6 +6,38 @@
 body{
     background-color: #dfd6d6;
 }
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 3;
+    background-color: rgba(0, 0, 0 ,0.4);
+}
+
+.titleMessage {
+    position: absolute;
+    width: 100%;
+    height: 250px;
+    top: 50%;
+    z-index: 5;
+    text-align: center;
+    margin-top: -125px;
+}
+
+.titleMessage .heading p {
+    color: #fff;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+    font-weight: 100;
+    letter-spacing: 6px;
+}
+.titleMessage .heading .main {
+    font-size: 50px;
+}
+.titleMessage .heading .sub {
+    font-size: 25px;
+}
+
 #top-image-sport{
     height: 70%;
     margin-top: 10%;
