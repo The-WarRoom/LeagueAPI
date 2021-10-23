@@ -60,7 +60,7 @@
     // take a specific player, get their team, match it to the 'key' for this return
     // pull the colors and urls off of it...
     function getTeams() {
-        return fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Teams?key=${TESTING_KEY}`)
+        return fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Teams?key=${SPORTS_DATA_TOKEN}`)
             .then(res => res.json().then(data => {
                 console.log(data);
                 return data;
