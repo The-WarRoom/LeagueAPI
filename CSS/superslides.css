@@ -63,3 +63,12 @@
 .slides-pagination a.current {
   background: #222;
 }
+
+.overlay {
+  height: 75vh !important;
+}
+.custom-image {
+  width: 100vw !important;
+  height: 23vh !important;
+  top: 0 !important;
+}

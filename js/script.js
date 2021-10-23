@@ -1,11 +1,12 @@
 (() => {
     'use strict';
+
     //====================================================================  SUPERSLIDES section
-    $(document).ready( () => {
+    // $(document).ready( () => {
 
         $('#slides').superslides({
             animation: 'fade',
-            play: 5000,
+            play: 50000,
             pagination: false
         });
 
@@ -18,8 +19,20 @@
             showCursor: false
         });
 
-    });
+    // });
 
+    // testImgRender();
+    //
+    // function testImgRender() {
+    //     let container = document.getElementById('test');
+    //     let html = '';
+    //     for(let i = 0; i < 32; i++) {
+    //         html += `<img src="img/nfl${i}.png">`;
+    //     }
+    //     console.log(container);
+    //     console.log(html);
+    //     container.innerHtml = html;
+    // }
 
 
 
@@ -30,6 +43,7 @@
     let desiredPositions = {inclusions: ["WR"], team: "LAR"};
     let doc = $("body");
     let testing_box = $("#card-testing-box");
+    let testBox = document.getElementById("all-players-and-teams");
 
 
     //==================================================================  PLAYER *CURRENT* STATS FOR SEASON
@@ -48,22 +62,31 @@
     function getTeams() {
         return fetch(`https://api.sportsdata.io/v3/nfl/scores/json/Teams?key=${TESTING_KEY}`)
             .then(res => res.json().then(data => {
+                console.log(data);
                 return data;
             }));
     }
 
     const getFilterTeamData = async () => {
         const allPlayers = await playerCurrentStats();
-        const teams = await getTeams();
-
         console.log(allPlayers);
+
+        const teams = await getTeams();
+        let teamKeys = teams.map(t => t.Key);
+
+        // the obj with each team and all the players for the team
+        // not being used other than a log
+        let teamObjSet = outputTeamsAndPlayers(allPlayers, teamKeys);
+        console.log(teamObjSet); // keys are each team with values of array of players
+
+
+
+        // could probably combine the team filtering from above into this to help with speed
         let filteredData = getHighestByDataPoint(allPlayers, desiredPositions, true);
-        console.log(filteredData);
+        // this the output for the specific position, WR for the specific team
+        console.log("WR for LAR", filteredData);
 
         let team = filteredData[0].Team;
-
-        // going to change this as it could throw an error
-        // let teamData = teams.filter(teamObj => teamObj.Key === team)[0];
 
         let teamData = _.find(teams, ['Key', team]);
 
@@ -73,9 +96,25 @@
     getFilterTeamData().then( (data) => {
         // pass in the team data to then use the color list in the chart
         createChart(renderDoughnut(data.filteredData, data.teamData, "ReceivingTargets"));
+
+        // creating the current player flip card
         testing_box.html(createCard(data.filteredData[0], data.teamData));
 
     });
+
+    function outputTeamsAndPlayers(allPlayers, teams) {
+        let teamSet = {};
+        for(let i = 0; i < teams.length; i++) {
+            let team = teams[i];
+            teamSet[team] = getPlayersForTeam(team, allPlayers);
+        }
+        return teamSet;
+    }
+
+
+    function getPlayersForTeam(team, allPlayers) {
+        return allPlayers.filter(player => player.Team === team);
+    }
 
 
 
