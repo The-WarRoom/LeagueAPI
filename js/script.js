@@ -41,7 +41,6 @@
     let desiredPositions = {inclusions: ["WR"], team: "LAR"};
     let doc = $("body");
     let testing_box = $("#card-testing-box");
-    let testBox = document.getElementById("all-players-and-teams");
 
 
     //==================================================================  PLAYER *CURRENT* STATS FOR SEASON
