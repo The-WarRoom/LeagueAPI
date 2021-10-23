@@ -2,7 +2,6 @@
     'use strict';
 
     //====================================================================  SUPERSLIDES section
-    // $(document).ready( () => {
 
         $('#slides').superslides({
             animation: 'fade',
@@ -19,7 +18,6 @@
             showCursor: false
         });
 
-    // });
 
     // testImgRender();
     //
