@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The War Room API</title>
+    <link rel="stylesheet" href="../../static/css/card.css">
+    <link rel="stylesheet" href="src/main/resources/static/css/superslides.css">
+
+</head>
+<body>
+<header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="offense.html">OFFENSE</a></li>
+            <li><a href="defense.html">DEFENSE</a></li>
+        </ul>
+        <div>
+            <select id="teams-dropDown">
+                <option value="ARI">ARI</option>
+                <option value="ATL">ATL</option>
+                <option value="BAL">BAL</option>
+                <option value="BUF">BUF</option>
+                <option value="CAR">CAR</option>
+                <option value="CHI">CHI</option>
+                <option value="CIN">CIN</option>
+                <option value="CLE">CLE</option>
+                <option value="DAL">DAL</option>
+                <option value="DEN">DEN</option>
+                <option value="DET">DET</option>
+                <option value="GB">GB</option>
+                <option value="HOU">HOU</option>
+                <option value="IND">IND</option>
+                <option value="JAX">JAX</option>
+                <option value="KC">KC</option>
+                <option value="LAC">LAC</option>
+                <option value="LAR">LAR</option>
+                <option value="LV">LV</option>
+                <option value="MIA">MIA</option>
+                <option value="MIN">MIN</option>
+                <option value="NE">NE</option>
+                <option value="NO">NO</option>
+                <option value="NYG">NYG</option>
+                <option value="NYJ">NYJ</option>
+                <option value="PHI">PHI</option>
+                <option value="PIT">PIT</option>
+                <option value="SEA">SEA</option>
+                <option value="SF">SF</option>
+                <option value="TB">TB</option>
+                <option value="TEN">TEN</option>
+                <option value="WAS">WAS</option>
+            </select>
+            <select id="position-dropDown">
+                <option value="QB">QB</option>
+                <option value="WR">WR</option>
+                <option value="RB">RB</option>
+                <option value="TE">TE</option>
+                <option value="K">K</option>
+            </select>
+            <button id="submit">Submit</button>
+        </div>
+        <div>
+            <label>Enter Player Name
+                <input placeholder="Player name">
+            </label>
+            <button id="submit-player-name">Submit</button>
+        </div>
+    </nav>
+</header>
+
+
+
+<div id="card-testing-box">
+
+</div>
+
+<div>
+    <canvas id="myChart">
+
+    </canvas>
+</div>
+
+
+
+
+<script src="../../static/js/keys.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+<script src="../../static/js/util.js"></script>
+<script src="../../static/js/api-util.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script type="module" src="../../static/js/script.js"></script>
+
+</body>
+</html>
