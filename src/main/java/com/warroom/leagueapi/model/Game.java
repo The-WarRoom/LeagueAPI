@@ -22,6 +22,7 @@ public class Game {
     private Date date;
 
 
+
     public Game() {
 
     }
