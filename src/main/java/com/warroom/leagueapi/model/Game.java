@@ -21,7 +21,6 @@ public class Game {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
-
     public Game() {
 
     }

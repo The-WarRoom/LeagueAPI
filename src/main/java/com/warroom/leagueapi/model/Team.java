@@ -16,13 +16,16 @@ public class Team {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
+    @Column(length = 100)
     private String name;
 
+    @Column(length = 50)
     private String division;
 
+    @Column(length = 50)
     private String conference;
 
+    @Column(length = 50)
     private String city;
 
     @OneToMany(mappedBy = "team")
